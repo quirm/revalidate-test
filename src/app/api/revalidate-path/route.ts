@@ -3,11 +3,9 @@ import type { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get('slug');
-  let path = slug ? `/${slug}` : '/[slug]';
+  const path = slug ? `/${slug}` : '/[slug]';
 
-  if (slug) {
-    revalidatePath(path, 'page');
-  }
+  revalidatePath(path, 'page');
 
-  return Response.json({ revalidated: path });
+  return Response.json({ revalidated: path, type: 'path (well, next.js kind of tag)' });
 }
