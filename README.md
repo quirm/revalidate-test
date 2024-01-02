@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js revalidation test
 
-## Getting Started
+Trying to make sense of `revalidatePath()` and `revalidateTag()` in the app router.
 
-First, run the development server:
+## What's wrong?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- `revalidatePath('/[slug]', 'page')` - works
+- `revalidatePath('/some-name', 'page')` - does not work
+- `revalidateTag('unique-tag')` - works
+- `revalidateTag('shared-tag')` - works
+- All pages are served on the second request after the revalidation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project has the following URLs for testing:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### `/[slug]`
 
-## Learn More
+Page fetching time for a specified town.
 
-To learn more about Next.js, take a look at the following resources:
+### `/tagged/[slug]`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Page fetching time for a specified town with explicit `{ next: { tags: ['times', slug] }}`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### `/api/revalidate-path?path=zurich`
 
-## Deploy on Vercel
+Use `revalidatePath(path, 'page')` or `revalidatePath('/[slug]', 'page')` if query param is missing.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### `/api/revalidate-tag?tag=zurich`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Use `revalidateTag(path)` or `revalidateTag('times')` if query param is missing.
